@@ -7,36 +7,36 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/youtube"
+        android:icon="@drawable/movieapp"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <provider
-            android:name=".ContentProvider"
+            android:name=".ContentProvider.ContentProvider"
             android:authorities="com.example.iloveallah.moviesapp1"
-            android:exported="true">
-        </provider>
-        <activity android:name=".MainActivity"
-            android:label="Pop Movies"
+            android:exported="true" />
+
+        <activity
+            android:name=".ui.MainActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            >
+            android:label="MoviesApp">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Info"
-            android:label="MovieDetail"
-            android:configChanges="orientation|keyboardHidden|screenSize"/>
-
-
-        <activity android:name=".Reviews"
-            android:label="MovieReviews"
+        <activity
+            android:name=".ui.Info"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            />
-
-
+            android:label="Movie Details" />
+        <activity
+            android:name=".ui.Reviews"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="Movie Reviews" />
+        <activity android:name=".ui.TraillersActivity"
+            android:label="Movie Traillers"
+            ></activity>
     </application>
 
 </manifest>

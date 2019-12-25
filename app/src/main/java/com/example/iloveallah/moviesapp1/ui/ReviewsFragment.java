@@ -1,4 +1,4 @@
-package com.example.iloveallah.moviesapp1;
+package com.example.iloveallah.moviesapp1.ui;
 
 import android.os.AsyncTask;
 import android.support.v4.app.Fragment;
@@ -9,6 +9,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import com.example.iloveallah.moviesapp1.R;
+import com.example.iloveallah.moviesapp1.adapters.ReviewsAdapter;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -59,7 +63,7 @@ public class ReviewsFragment extends Fragment {
 
 
 
-    class fetch_reviews extends AsyncTask<Void,Void,String> {
+   public class fetch_reviews extends AsyncTask<Void,Void,String> {
 
         @Override
         protected String doInBackground(Void... voids) {
@@ -81,6 +85,7 @@ public class ReviewsFragment extends Fragment {
                 Log.d("response", result);
             } catch (MalformedURLException e) {
                 e.printStackTrace();
+
             } catch (IOException e) {
                 e.printStackTrace();
             }

@@ -1,13 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+
+    >
 <item
     android:title="Most popula"
-    android:id="@+id/most_popula"/>
+    android:id="@+id/most_popula"
+    android:icon="@drawable/mostpopular"
+    app:showAsAction="never"
+    android:visible="true"
+
+    />
     <item
         android:title="Highest Rated"
-        android:id="@+id/highest_rated"/>
-    android:id="@+id/most_popula"/>
+        android:id="@+id/highest_rated"
+       android:icon="@drawable/highestrated"
+        app:showAsAction="never"
+
+
+        />
+
     <item
         android:title="Favourite"
-        android:id="@+id/favourite"/>
+        android:id="@+id/favourite"
+        android:icon="@drawable/favourite"
+        app:showAsAction="never"
+        />
 </menu>

@@ -1,13 +1,17 @@
-package com.example.iloveallah.moviesapp1;
+package com.example.iloveallah.moviesapp1.ui;
 
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.AsyncTask;
-import android.os.Parcelable;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -15,9 +19,17 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.GridView;
 import android.widget.Toast;
+
+import com.example.iloveallah.moviesapp1.ContentProvider.Contract;
+import com.example.iloveallah.moviesapp1.ContentProvider.Database;
+import com.example.iloveallah.moviesapp1.Listener;
+import com.example.iloveallah.moviesapp1.Movies;
+import com.example.iloveallah.moviesapp1.NetworkConnection;
+import com.example.iloveallah.moviesapp1.R;
+import com.example.iloveallah.moviesapp1.RecyclerItemClickListener;
+import com.example.iloveallah.moviesapp1.adapters.MoviesRecyclerViewAdapter;
+import com.example.iloveallah.moviesapp1.adapters.TrailerAdapter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -33,25 +45,26 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 
-public class MainFragment  extends Fragment    {
+public class MainFragment  extends Fragment     {
     URL url;
-    Parcelable state;
     ArrayList<Movies> arr_movies=new ArrayList<Movies>();;
-    GridView gridView;
+    RecyclerView recyclerView;
+    private RecyclerView.LayoutManager mLayoutManager;
     ArrayList<String>images,origina_title,overview,rating,release_data,id;
     private Listener listener;
-    Adapter ad;
     void setListener( Listener listener)
     {
         this.listener=listener;
     }
 
+
+    MoviesRecyclerViewAdapter adapter;
+    Movies m1;
+
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
          outState.putSerializable("myAdapter", ( arr_movies));
-
-
 
 
     }
@@ -62,8 +75,49 @@ public class MainFragment  extends Fragment    {
         // Inflate the layout for this fragment
         setHasOptionsMenu(true);
         View view = inflater.inflate(R.layout.activity_main_fragment, container, false);
-        gridView=(GridView)view.findViewById(R.id.grid);
 
+
+        getActivity().setTitle("Most Popular");
+
+
+
+        recyclerView = (RecyclerView)view. findViewById(R.id.recyclerView);
+
+
+
+
+
+
+        if (recyclerView != null) {
+            recyclerView.setHasFixedSize(true);
+        }
+
+        //        //using a linear layout manager
+       // mLayoutManager = new LinearLayoutManager(getContext());
+
+       // use this in case of gridlayoutmanager
+
+
+        mLayoutManager = new GridLayoutManager(getContext(),2);
+
+        /*
+        use this in case of Staggered GridLayoutManager
+         */
+//        mLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+
+
+        recyclerView.setLayoutManager(mLayoutManager);
+
+
+
+
+
+        recyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), new RecyclerItemClickListener.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                listener.response(arr_movies.get(position));
+            }
+        }));
 
 
 /*
@@ -79,11 +133,11 @@ public class MainFragment  extends Fragment    {
         }
 */
 
-        ad = new Adapter();
         if(savedInstanceState != null&&savedInstanceState.containsKey("myAdapter")) {
             arr_movies=(ArrayList<Movies>) savedInstanceState.getSerializable("myAdapter");
-            ad=new Adapter(arr_movies,getActivity());
-            gridView.setAdapter(ad);
+            adapter=new MoviesRecyclerViewAdapter(arr_movies,getActivity());
+            recyclerView.setAdapter(adapter);
+            adapter.notifyDataSetChanged();
         }
 
 
@@ -109,7 +163,7 @@ public class MainFragment  extends Fragment    {
     public void onPause() {
         super.onPause();
        // Log.d(TAG, "saving listview state @ onPause");
-        state = gridView.onSaveInstanceState();
+//        state = recyclerView.onSaveInstanceState();
     }
 
     @Override
@@ -117,13 +171,13 @@ public class MainFragment  extends Fragment    {
         super.onStart();
         //ad.notifyDataSetChanged();
        // gridView.setAdapter(ad);
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                listener.response(arr_movies.get(i));
-
-            }
-        });
+//        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+//                listener.response(arr_movies.get(i));
+//
+//            }
+//        });
     }
 
     static Intent get_intent(Context context, Movies movie){
@@ -133,6 +187,9 @@ public class MainFragment  extends Fragment    {
 
         return new Intent(context, Info.class).putExtra("data", bundle);
     }
+
+
+
     class data extends AsyncTask<Void,Void,String> {
 
         @Override
@@ -194,7 +251,7 @@ public class MainFragment  extends Fragment    {
 
                 for(int g=0;g<images.size();g++)
                 {
-                    Movies m1=new Movies();
+                    m1=new Movies();
                     m1.image=images.get(g);
                     m1.original_title=origina_title.get(g);
                     m1.overview=overview.get(g);
@@ -203,15 +260,17 @@ public class MainFragment  extends Fragment    {
                     m1.id=id.get(g);
                     arr_movies.add(m1);
                 }
-                 ad=new Adapter(arr_movies,getActivity());
-                gridView.setAdapter(ad);
 
 
+                adapter=new MoviesRecyclerViewAdapter(arr_movies,getActivity());
+                recyclerView.setAdapter(adapter);
+                adapter.notifyDataSetChanged();
             } catch (JSONException e) {
                 e.printStackTrace();
             }
 
         }
+
     }
 
     @Override
@@ -223,6 +282,8 @@ public class MainFragment  extends Fragment    {
                 //
                 try {
                     if (NetworkConnection.getInstance(getActivity()).isOnline()){
+                        getActivity().setTitle("Most Popular");
+
                         url = new URL("http://api.themoviedb.org/3/movie/popular?api_key=8eb8717d379460a259bc7fc18f41d191");
 
                         data data=new data();
@@ -240,6 +301,8 @@ public class MainFragment  extends Fragment    {
                 arr_movies.clear();
                 try {
                     if (NetworkConnection.getInstance(getContext()).isOnline()){
+                        getActivity().setTitle("Highest Rated");
+
                         url = new URL("http://api.themoviedb.org/3/movie/top_rated?api_key=8eb8717d379460a259bc7fc18f41d191");
                         data data=new data();
                         data.execute();
@@ -254,7 +317,7 @@ public class MainFragment  extends Fragment    {
             }
 
             case R.id.favourite:{
-                arr_movies.clear();
+
                 Log.d("asd","out");
                 new AsyncTask<Void,Void,Cursor>() {
                     @Override
@@ -276,8 +339,11 @@ public class MainFragment  extends Fragment    {
                         super.onPostExecute(cursor);
                         if(cursor.moveToFirst())
                         {
+                            arr_movies.clear();
+                            getActivity().setTitle("Favorites ");
+
                             do {
-                                Movies m1=new Movies();
+                                 m1=new Movies();
                                 String title = cursor.getString(cursor.getColumnIndex(Database.title));
 
                                 String image = cursor.getString(cursor.getColumnIndex(Database.image));
@@ -295,10 +361,16 @@ public class MainFragment  extends Fragment    {
                                 m1.release_date=date;
                                 m1.id=ID;
                                 arr_movies.add(m1);
+
                             }while (cursor.moveToNext());
+                            adapter=new MoviesRecyclerViewAdapter(arr_movies,getActivity());
+                            recyclerView.setAdapter(adapter);
+                            adapter.notifyDataSetChanged();
                         }
-                         ad=new Adapter(arr_movies,getActivity());
-                       gridView.setAdapter(ad);
+                        else {
+                            Toast.makeText(getContext(), "There is no favourites till now", Toast.LENGTH_SHORT).show();
+                        }
+
                     }
                 }.execute();
 
@@ -323,6 +395,7 @@ public class MainFragment  extends Fragment    {
             do {
                 String title = cursor.getString(cursor.getColumnIndex(Database.title));
                 origina_title.add(title);
+                Toast.makeText(getContext(), title, Toast.LENGTH_SHORT).show();
                 String image = cursor.getString(cursor.getColumnIndex(Database.image));
                 images.add(image);
                 String overV = cursor.getString(cursor.getColumnIndex(Database.overview));
@@ -341,7 +414,7 @@ public class MainFragment  extends Fragment    {
         }
         for(int g=0;g<images.size();g++)
         {
-            Movies m1=new Movies();
+            m1=new Movies();
             m1.image=images.get(g);
             m1.original_title=origina_title.get(g);
             m1.overview=overview.get(g);

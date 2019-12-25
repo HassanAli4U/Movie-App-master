@@ -1,4 +1,4 @@
-package com.example.iloveallah.moviesapp1;
+package com.example.iloveallah.moviesapp1.adapters;
 
 import android.app.Activity;
 import android.content.Context;
@@ -9,6 +9,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.iloveallah.moviesapp1.R;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;

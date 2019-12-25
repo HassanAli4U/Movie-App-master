@@ -8,6 +8,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:orientation="vertical"
+    android:background="@color/colorWhite"
     android:id="@+id/review"
-    tools:context="com.example.iloveallah.moviesapp1.Reviews">
+    tools:context="com.example.iloveallah.moviesapp1.ui.Reviews">
 </LinearLayout>

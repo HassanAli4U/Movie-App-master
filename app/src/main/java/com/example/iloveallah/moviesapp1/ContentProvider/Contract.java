@@ -1,4 +1,4 @@
-package com.example.iloveallah.moviesapp1;
+package com.example.iloveallah.moviesapp1.ContentProvider;
 
 import android.content.ContentResolver;
 import android.content.ContentUris;

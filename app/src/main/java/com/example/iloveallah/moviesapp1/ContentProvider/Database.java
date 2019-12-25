@@ -1,4 +1,4 @@
-package com.example.iloveallah.moviesapp1;
+package com.example.iloveallah.moviesapp1.ContentProvider;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -9,16 +9,16 @@ import android.net.Uri;
  * Created by I Love Allah on 11/16/2016.
  */
 public class Database extends SQLiteOpenHelper {
-    static final String Database_name="moviesApp";
-    static  final  String TABLE_NAME="Movies";
-    static  final  String title="title";
-    static  final  String image="image";
-    static  final  String rate="rate";
-    static  final  String date="date";
-    static  final  String overview="overview";
-    static  final  String movie_id="movie_id";
-    static  final String ID="id";
-    static final int version=1;
+    public static final String Database_name="moviesApp";
+    public static  final  String TABLE_NAME="Movies";
+    public static  final  String title="title";
+    public static  final  String image="image";
+    public static  final  String rate="rate";
+    public static  final  String date="date";
+    public static  final  String overview="overview";
+    public static  final  String movie_id="movie_id";
+    public static  final String ID="id";
+    public static final int version=1;
     public Database(Context context) {
         super(context, Database_name, null, version);
     }
